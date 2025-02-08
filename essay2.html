@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détecteur de Nombres de Ramanujan</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --secondary: #f0f4f8;
+            --text: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--secondary);
+            color: var(--text);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+        }
+
+        h1 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            font-size: 2.2rem;
+        }
+
+        .input-group {
+            margin: 2rem 0;
+        }
+
+        input {
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            width: 200px;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: transform 0.2s, background 0.3s;
+            margin-left: 10px;
+        }
+
+        button:hover {
+            background: #357abd;
+            transform: translateY(-2px);
+        }
+
+        #result {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            background: #f8f9fa;
+            min-height: 100px;
+        }
+
+        .cube-pair {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px 15px;
+            background: #e3f2fd;
+            border-radius: 6px;
+            animation: fadeIn 0.5s;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔢 Détecteur de Nombres de Ramanujan</h1>
+        
+        <div class="input-group">
+            <input type="number" id="inputNumber" placeholder="Entrez un nombre">
+            <button onclick="checkNumber()">Vérifier</button>
+        </div>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function checkNumber() {
+            const input = document.getElementById('inputNumber').value.trim();
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '';
+
+            if (!input) {
+                showError('Veuillez entrer un nombre');
+                return;
+            }
+
+            const number = parseInt(input, 10);
+            
+            if (number <= 0 || isNaN(number)) {
+                showError('Veuillez entrer un entier positif');
+                return;
+            }
+
+            if (number > 1e6) {
+                if (!confirm('⚠️ Un grand nombre peut ralentir le navigateur. Continuer ?')) return;
+            }
+
+            resultDiv.innerHTML = '<div class="loading">Calcul en cours...</div>';
+            
+            setTimeout(() => { // Simulation de délai pour l'UI
+                const pairs = findCubePairs(number);
+                displayResult(number, pairs);
+            }, 50);
+        }
+
+        function findCubePairs(n) {
+            const pairs = [];
+            const max = Math.floor(Math.cbrt(n)) + 1;
+            
+            for (let a = 1; a < max; a++) {
+                const aCubed = a ** 3;
+                if (aCubed > n) break;
+                
+                for (let b = a; b < max; b++) {
+                    const sum = aCubed + b ** 3;
+                    if (sum === n) {
+                        pairs.push([a, b]);
+                    } else if (sum > n) {
+                        break;
+                    }
+                }
+            }
+            return pairs;
+        }
+
+        function displayResult(number, pairs) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = '';
+
+            if (pairs.length >= 2) {
+                resultDiv.innerHTML = `
+                    <h3 style="color: #27ae60;">${number} est un nombre de Ramanujan ! 🎉</h3>
+                    <p>${pairs.length} combinaisons trouvées :</p>
+                `;
+                
+                pairs.forEach(pair => {
+                    const elem = document.createElement('div');
+                    elem.className = 'cube-pair';
+                    elem.innerHTML = `
+                        ${pair[0]}³ + ${pair[1]}³ = 
+                        <strong>${pair[0]**3 + pair[1]**3}</strong>
+                    `;
+                    resultDiv.appendChild(elem);
+                });
+            } else {
+                resultDiv.innerHTML = `
+                    <h3 style="color: #e74c3c;">${number} n'est pas un nombre de Ramanujan ❌</h3>
+                    <p>Aucune paire de cubes trouvée</p>
+                `;
+            }
+        }
+
+        function showError(message) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `<div class="error">${message}</div>`;
+        }
+    </script>
+</body>
+</html>
