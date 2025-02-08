@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détecteur de Nombres de Ramanujan</title>
+    <title>Ramanujan Number Detector</title>
     <style>
         :root {
             --primary: #4a90e2;
@@ -103,11 +103,11 @@
 </head>
 <body>
     <div class="container">
-        <h1>🔢 Détecteur de Nombres de Ramanujan</h1>
+        <h1>🔢 Ramanujan Number Detector</h1>
         
         <div class="input-group">
-            <input type="number" id="inputNumber" placeholder="Entrez un nombre">
-            <button onclick="checkNumber()">Vérifier</button>
+            <input type="number" id="inputNumber" placeholder="Enter a number">
+            <button onclick="checkNumber()">Verify</button>
         </div>
 
         <div id="result"></div>
@@ -120,22 +120,22 @@
             resultDiv.innerHTML = '';
 
             if (!input) {
-                showError('Veuillez entrer un nombre');
+                showError('Enter a number');
                 return;
             }
 
             const number = parseInt(input, 10);
             
             if (number <= 0 || isNaN(number)) {
-                showError('Veuillez entrer un entier positif');
+                showError('Enter a positive number');
                 return;
             }
 
             if (number > 1e6) {
-                if (!confirm('⚠️ Un grand nombre peut ralentir le navigateur. Continuer ?')) return;
+                if (!confirm('⚠️ A big number can make the browser running slownly. Do you want to continue ?')) return;
             }
 
-            resultDiv.innerHTML = '<div class="loading">Calcul en cours...</div>';
+            resultDiv.innerHTML = '<div class="loading">Calculation processing...</div>';
             
             setTimeout(() => { // Simulation de délai pour l'UI
                 const pairs = findCubePairs(number);
@@ -169,8 +169,8 @@
 
             if (pairs.length >= 2) {
                 resultDiv.innerHTML = `
-                    <h3 style="color: #27ae60;">${number} est un nombre de Ramanujan ! 🎉</h3>
-                    <p>${pairs.length} combinaisons trouvées :</p>
+                    <h3 style="color: #27ae60;">${number} is a Ramanujan's number ! 🎉</h3>
+                    <p>${pairs.length} combinations find :</p>
                 `;
                 
                 pairs.forEach(pair => {
@@ -184,8 +184,8 @@
                 });
             } else {
                 resultDiv.innerHTML = `
-                    <h3 style="color: #e74c3c;">${number} n'est pas un nombre de Ramanujan ❌</h3>
-                    <p>Aucune paire de cubes trouvée</p>
+                    <h3 style="color: #e74c3c;">${number} is not a Ramanujan's number ❌</h3>
+                    <p>No Pairs of Cubes Found</p>
                 `;
             }
         }
